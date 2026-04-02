@@ -193,6 +193,7 @@ export default function AttendancePage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [submittedAt, setSubmittedAt] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
@@ -292,6 +293,8 @@ export default function AttendancePage() {
       });
       setSubmittedAt(format(new Date(), 'h:mm a'));
       setShowConfirm(false);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
     } finally {
       setSubmitting(false);
     }
@@ -320,9 +323,19 @@ export default function AttendancePage() {
         )}
       </div>
 
+      {/* Submit success banner */}
+      {showSuccess && (
+        <div className="mb-4 flex items-center gap-3 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
+          <span className="text-green-600 text-lg">✓</span>
+          <div>
+            <p className="text-sm font-semibold text-green-800">Attendance submitted</p>
+            <p className="text-xs text-green-600">Saved at {submittedAt}</p>
+          </div>
+        </div>
+      )}
+
       {/* Date navigation */}
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <button
+      <div className="flex items-center justify-center gap-4 mb-6">        <button
           onClick={() => setSelectedDate(format(subDays(parseISO(selectedDate), 1), 'yyyy-MM-dd'))}
           className="p-2 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
         >
@@ -370,6 +383,16 @@ export default function AttendancePage() {
                 >
                   All Present
                 </button>
+                {submittedAt && (
+                  <button
+                    onClick={() => {
+                      if (confirm('Reset all students to Present?')) markAllPresent();
+                    }}
+                    className="px-3 py-2 text-sm font-medium bg-white border border-red-200 rounded-lg hover:bg-red-50 text-red-500 transition-colors whitespace-nowrap"
+                  >
+                    Reset
+                  </button>
+                )}
                 <button
                   onClick={() => setShowImport(true)}
                   className="px-3 py-2 text-sm font-medium bg-white border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-700 transition-colors whitespace-nowrap"

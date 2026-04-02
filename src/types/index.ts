@@ -1,6 +1,6 @@
 import type { Timestamp } from 'firebase/firestore';
 
-export type UserRole = 'teacher' | 'admin';
+export type UserRole = 'teacher' | 'admin' | 'principal';
 export type AttendanceStatus = 'present' | 'absent' | 'late';
 
 export interface AppUser {
